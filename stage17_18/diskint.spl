@@ -1,0 +1,20 @@
+alias currentPID R1;
+currentPID=[SYSTEM_STATUS_TABLE+1];
+alias usersp R2;
+usersp=SP;
+[PROCESS_TABLE+currentPID*16+13]=usersp;
+SP=[PROCESS_TABLE+currentPID*16+11]*512-1;
+backup;
+alias i R3;
+i=0;
+while(i<16)
+do 
+if([PROCESS_TABLE+i*16+4]==WAIT_DISK)
+then
+[PROCESS_TABLE+i*16+4]=READY;
+endif;
+i=i+1;
+endwhile;
+restore;
+SP=[PROCESS_TABLE+currentPID*16+13];
+ireturn;
